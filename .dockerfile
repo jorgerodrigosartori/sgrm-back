@@ -6,19 +6,15 @@ FROM maven:3.9.6-eclipse-temurin-17 AS build
 # Diretório de trabalho no container de build
 WORKDIR /app
 
-# Copia arquivos do Maven primeiro (para aproveitar cache)
+# Copia o pom.xml e baixa as dependências (aproveita cache entre builds)
 COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
+RUN mvn dependency:go-offline
 
-# Baixa dependências para aproveitar cache entre builds
-RUN ./mvnw dependency:go-offline
-
-# Copia o restante do código
+# Copia o restante do código-fonte
 COPY src ./src
 
 # Compila e gera o JAR
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 # ============================
 # Etapa 2: Runtime
