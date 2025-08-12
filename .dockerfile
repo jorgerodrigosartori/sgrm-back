@@ -1,11 +1,38 @@
-# Use uma imagem oficial do Java como base (aqui estamos usando a versão 11)
-FROM openjdk:11-jre-slim
+# ============================
+# Etapa 1: Build
+# ============================
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 
-# Copie o arquivo JAR do seu projeto para dentro da imagem Docker
-COPY target/sgrm-back.jar /usr/app/
+# Diretório de trabalho no container de build
+WORKDIR /app
 
-# Defina o diretório de trabalho dentro do container
-WORKDIR /usr/app
+# Copia arquivos do Maven primeiro (para aproveitar cache)
+COPY pom.xml .
+COPY mvnw .
+COPY .mvn .mvn
 
-# O comando para rodar a aplicação
-CMD ["java", "-jar", "sgrm-back.jar"]
+# Baixa dependências para aproveitar cache entre builds
+RUN ./mvnw dependency:go-offline
+
+# Copia o restante do código
+COPY src ./src
+
+# Compila e gera o JAR
+RUN ./mvnw clean package -DskipTests
+
+# ============================
+# Etapa 2: Runtime
+# ============================
+FROM eclipse-temurin:17-jre-alpine
+
+# Diretório de trabalho no container final
+WORKDIR /app
+
+# Copia o JAR gerado na etapa de build
+COPY --from=build /app/target/*.jar app.jar
+
+# Expõe a porta (Render substitui via variável PORT)
+EXPOSE 8080
+
+# Comando para iniciar a aplicação
+ENTRYPOINT ["java", "-jar", "app.jar"]
