@@ -22,13 +22,13 @@ public class Revista {
     @Column(name = "data_publicacao")
     private Date dataPublicacao;
 
-    @Column(name = "data_carga", nullable = false)
+    @Column(name = "data_carga")
     private Date dataCarga;
 
-    @Column(name = "endereco_arquivo", nullable = false, length = 400)
+    @Column(name = "endereco_arquivo", length = 400)
     private String enderecoArquivo = "";
 
-    @Column(name = "status", nullable = false, length = 1)
+    @Column(name = "status", length = 1)
     private String status;
     
 }

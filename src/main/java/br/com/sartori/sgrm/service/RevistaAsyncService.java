@@ -133,10 +133,10 @@ public class RevistaAsyncService {
 		iRevistaRepository.save(rev);
 	}
 
-	@Transactional
+	//@Transactional
 	private void gravaBancoProcesso(List<Processo> listaProcessos) {
 
-		int size = 1000;
+		int size = 100;
 		List<List<Processo>> partitionedLists = new ArrayList<List<Processo>>();
 		for (int i = 0; i < listaProcessos.size(); i += size) {
 			int end = Math.min(i + size, listaProcessos.size());
@@ -147,15 +147,25 @@ public class RevistaAsyncService {
 		// partitionedLists.parallelStream().forEach(p ->
 		// processoService.salvarProcessos(p));
 
-		for (List<Processo> lista : partitionedLists)
-			processoService.salvarProcessos(lista);
+		int qtLista = 0;
+		for (List<Processo> lista : partitionedLists) {
+			qtLista++;
+			salvarProcessos(lista);
+			System.out.println(new Date() + " - Grava processos: " + qtLista + " de " + partitionedLists.size());
 		// despachoProcessoService.salvarAll(lista);
+		}
+	}
+	
+	@Transactional
+	private void salvarProcessos(List<Processo> lista) {
+		
+		processoService.salvarProcessos(lista);
 	}
 
-	@Transactional
+	//@Transactional
 	private void gravaBancoDespachoProcesso(List<DespachoProcesso> listaDespachosProcesso) {
 
-		int size = 1000;
+		int size = 100;
 		List<List<DespachoProcesso>> partitionedLists = new ArrayList<List<DespachoProcesso>>();
 		for (int i = 0; i < listaDespachosProcesso.size(); i += size) {
 			int end = Math.min(i + size, listaDespachosProcesso.size());
@@ -163,8 +173,18 @@ public class RevistaAsyncService {
 		}
 
 		System.out.println(new Date() + " - Grava despachos de processos: " + listaDespachosProcesso.size());
-		for (List<DespachoProcesso> lista : partitionedLists)
-			despachoProcessoService.salvarAll(lista);
+		int qtListas = 0;
+		for (List<DespachoProcesso> lista : partitionedLists) {
+			qtListas++;
+			salvarDespachoProcesso(lista);
+			System.out.println(new Date() + " - Grava despachos de processos: " + qtListas + " de " + partitionedLists.size());
+		}
+	}
+	
+	@Transactional
+	private void salvarDespachoProcesso(List<DespachoProcesso> lista) {
+		
+		despachoProcessoService.salvarAll(lista);
 	}
 	
 	private RevistaXml recuperaRevistas(Integer numeroRevista) {
