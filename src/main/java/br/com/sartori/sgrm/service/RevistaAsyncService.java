@@ -75,6 +75,8 @@ public class RevistaAsyncService {
 			for (ProcessoXml pro : revista.getProcessos()) {
 
 				contador++;
+				//if(contador > 100)
+				//	break;
 				Processo processo = processoService.consultaProcesso(Long.valueOf(pro.getNumero()));
 				if (processo == null) {
 					processo = new Processo(Long.valueOf(pro.getNumero()));
@@ -136,7 +138,7 @@ public class RevistaAsyncService {
 	//@Transactional
 	private void gravaBancoProcesso(List<Processo> listaProcessos) {
 
-		int size = 100;
+		int size = 1000;
 		List<List<Processo>> partitionedLists = new ArrayList<List<Processo>>();
 		for (int i = 0; i < listaProcessos.size(); i += size) {
 			int end = Math.min(i + size, listaProcessos.size());
