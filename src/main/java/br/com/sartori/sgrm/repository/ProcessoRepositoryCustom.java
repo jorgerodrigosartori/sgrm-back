@@ -28,6 +28,7 @@ public class ProcessoRepositoryCustom {
         sql.append(" WHERE dp.id.numeroProcesso = p.numeroProcesso ");        
         sql.append("   AND dp.id.codigo = d.codigo ");
         sql.append("   AND dp.id.numeroRevista = :revista ");
+        sql.append(" order by p.nomeMarca ");
  
         Query query = em.createQuery(sql.toString(), DespachoProcesso.class);
         query.setParameter("revista", revista);
@@ -128,6 +129,21 @@ public class ProcessoRepositoryCustom {
 		if(processo != null)
 			query.setParameter("processo", processo);
 		else query.setParameter("marca", "%" + marca.toUpperCase() + "%");
+		
+		return query.getResultList();
+	}	
+	
+	@SuppressWarnings("unchecked")
+	public List<Processo> listarProcessos(List<Long> processos) {
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT p ");
+		sql.append(" FROM Processo p ");
+		sql.append(" WHERE p.numeroProcesso in (:processos) ");
+		sql.append(" order by p.nomeMarca ");
+		
+		Query query = em.createQuery(sql.toString(), Processo.class);
+		query.setParameter("processos", processos);
 		
 		return query.getResultList();
 	}	

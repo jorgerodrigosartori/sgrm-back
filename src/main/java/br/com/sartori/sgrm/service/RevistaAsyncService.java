@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -70,14 +72,34 @@ public class RevistaAsyncService {
 			List<Processo> listaProcessos = new ArrayList<Processo>();
 			List<DespachoProcesso> listaDespachosProcesso = new ArrayList<DespachoProcesso>();
 
+			
+			List<Long> numerosProcessos = revista.getProcessos().stream()
+	                .map(pro -> Long.valueOf(pro.getNumero()))
+	                .toList();
+					
+			int batchSize = 100;
+			Map<Long, Processo> processosExistentes = new HashMap<>();
+
+
 			Integer contador = 0;
+			for (int i = 0; i < numerosProcessos.size(); i += batchSize) {
+				contador++;
+			    int end = Math.min(i + batchSize, numerosProcessos.size());
+			    List<Long> subLista = numerosProcessos.subList(i, end);
+
+			    List<Processo> lote = processoService.consultaProcessos(subLista);
+			    for (Processo p : lote) {
+			        processosExistentes.put(p.getNumeroProcesso(), p);
+			    }
+			    System.out.println("Concluida consulta banco " + (contador * 100) + " de " + processosExistentes.size());
+			}
+			
+			contador = 0;
 
 			for (ProcessoXml pro : revista.getProcessos()) {
 
 				contador++;
-				//if(contador > 100)
-				//	break;
-				Processo processo = processoService.consultaProcesso(Long.valueOf(pro.getNumero()));
+				Processo processo = processosExistentes.get(Long.valueOf(pro.getNumero()));
 				if (processo == null) {
 					processo = new Processo(Long.valueOf(pro.getNumero()));
 				}
@@ -131,6 +153,7 @@ public class RevistaAsyncService {
 			rev.setStatus("S");
 		} catch (Exception e) {
 			rev.setStatus("E");
+			e.printStackTrace();
 		}
 		iRevistaRepository.save(rev);
 	}
@@ -167,7 +190,7 @@ public class RevistaAsyncService {
 	//@Transactional
 	private void gravaBancoDespachoProcesso(List<DespachoProcesso> listaDespachosProcesso) {
 
-		int size = 100;
+		int size = 1000;
 		List<List<DespachoProcesso>> partitionedLists = new ArrayList<List<DespachoProcesso>>();
 		for (int i = 0; i < listaDespachosProcesso.size(); i += size) {
 			int end = Math.min(i + size, listaDespachosProcesso.size());

@@ -53,6 +53,11 @@ public class ProcessoService {
 			return null;
 	}
 
+	public List<Processo> consultaProcessos(List<Long> ids) {
+		
+		return processoRepositoryCustom.listarProcessos(ids);
+	}
+	
 	public void salvarProcessos(List<Processo> pro) {
 
 		iProcessoRepository.saveAll(pro);
