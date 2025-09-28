@@ -45,8 +45,9 @@ public class RevistaRepositoryCustom {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" select rev ");		
 		sql.append(" from Revista rev ");		
-		sql.append(" where rev.numeroRevista = (select max(re.numeroRevista) from Revista re) ");				
+		sql.append(" where rev.numeroRevista = (select max(re.numeroRevista) from Revista re where re.integral = :integral) ");				
 		Query query = em.createQuery(sql.toString(), Revista.class);
+		query.setParameter("integral", "S");
 		return (Revista) query.getSingleResult();
 	}
 
@@ -55,8 +56,9 @@ public class RevistaRepositoryCustom {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" select rev ");		
 		sql.append(" from Revista rev ");		
-		sql.append(" where rev.numeroRevista = (select min(re.numeroRevista) from Revista re) ");				
+		sql.append(" where rev.numeroRevista = (select min(re.numeroRevista) from Revista re where re.integral = :integral) ");				
 		Query query = em.createQuery(sql.toString(), Revista.class);
+		query.setParameter("integral", "S");
 		return (Revista) query.getSingleResult();
 	}
 	

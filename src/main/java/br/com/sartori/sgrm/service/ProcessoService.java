@@ -1,6 +1,7 @@
 package br.com.sartori.sgrm.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -164,6 +165,10 @@ public class ProcessoService {
 			
 			lista.add(p);
 		}
+		lista.sort(Comparator.comparing(
+			    Processo::getNomeMarca,
+			    Comparator.nullsFirst(String::compareTo)
+			));
 		return converteListaProcesso(lista, true);
 	}
 	
@@ -200,6 +205,9 @@ public class ProcessoService {
 			pro.setNomeMarca(p.getNomeMarca());
 			pro.setStatus(p.getStatus());
 			pro.setClasse(p.getClasse());
+			
+			pro.setPrimeiraData(UtilData.converteData(p.getDespachos().get(0).getRevista().getDataPublicacao(), "dd/MM/yyyy"));
+			pro.setUltimaData(UtilData.converteData(p.getDespachos().get(p.getDespachos().size() -1).getRevista().getDataPublicacao(), "dd/MM/yyyy"));
 			
 			if(completo) {
 				pro.setDespachos(new ArrayList<DespachoDto>());
@@ -292,5 +300,4 @@ public class ProcessoService {
 
 		return marcaAcompanhadaRepositoryCustom.qtMarcasAcompanhadas().intValue();
 	}
-	
 }

@@ -31,4 +31,7 @@ public class Revista {
     @Column(name = "status", length = 1)
     private String status;
     
+    @Column(name = "integral", length = 1)
+    private String integral;
+    
 }

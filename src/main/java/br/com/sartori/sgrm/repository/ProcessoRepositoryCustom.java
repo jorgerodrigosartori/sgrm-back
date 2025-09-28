@@ -76,7 +76,7 @@ public class ProcessoRepositoryCustom {
 		sql.append("    , DespachoProcesso dp ");
 		sql.append(" WHERE p.numeroProcesso = pa.numeroProcesso ");
 		sql.append("   AND p.numeroProcesso = dp.id.numeroProcesso");		
-		sql.append(" order by p.nomeMarca");
+		sql.append(" order by p.nomeMarca, dp.revista.dataPublicacao ");
 		
 		Query query = em.createQuery(sql.toString(), DespachoProcesso.class);	
 		return query.getResultList();

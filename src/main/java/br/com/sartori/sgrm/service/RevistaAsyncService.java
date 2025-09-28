@@ -188,7 +188,7 @@ public class RevistaAsyncService {
 	}
 
 	//@Transactional
-	private void gravaBancoDespachoProcesso(List<DespachoProcesso> listaDespachosProcesso) {
+	public void gravaBancoDespachoProcesso(List<DespachoProcesso> listaDespachosProcesso) {
 
 		int size = 1000;
 		List<List<DespachoProcesso>> partitionedLists = new ArrayList<List<DespachoProcesso>>();
@@ -212,7 +212,7 @@ public class RevistaAsyncService {
 		despachoProcessoService.salvarAll(lista);
 	}
 	
-	private RevistaXml recuperaRevistas(Integer numeroRevista) {
+	public RevistaXml recuperaRevistas(Integer numeroRevista) {
 
 		System.out.println(" ");
 		System.out.println("*****************************************************************************");

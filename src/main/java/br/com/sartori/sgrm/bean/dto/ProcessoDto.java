@@ -34,5 +34,9 @@ public class ProcessoDto {
     private List<ProcessoDto> processosSemelhantes;
     
     private String semelhantes;
+    
+    private String primeiraData;
+    
+    private String ultimaData;
 
 }
