@@ -206,9 +206,10 @@ public class ProcessoService {
 			pro.setStatus(p.getStatus());
 			pro.setClasse(p.getClasse());
 			
-			pro.setPrimeiraData(UtilData.converteData(p.getDespachos().get(0).getRevista().getDataPublicacao(), "dd/MM/yyyy"));
-			pro.setUltimaData(UtilData.converteData(p.getDespachos().get(p.getDespachos().size() -1).getRevista().getDataPublicacao(), "dd/MM/yyyy"));
-			
+			if(p.getDespachos() != null && p.getDespachos().size() > 0) {
+				pro.setPrimeiraData(UtilData.converteData(p.getDespachos().get(0).getRevista().getDataPublicacao(), "dd/MM/yyyy"));
+				pro.setUltimaData(UtilData.converteData(p.getDespachos().get(p.getDespachos().size() -1).getRevista().getDataPublicacao(), "dd/MM/yyyy"));
+			}
 			if(completo) {
 				pro.setDespachos(new ArrayList<DespachoDto>());
 				for(DespachoProcesso dp : p.getDespachos()) {
