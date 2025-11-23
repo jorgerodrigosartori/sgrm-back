@@ -10,4 +10,6 @@ public class MovimentacaoDto {
 	private Long numeroProcesso;
 
     private Integer numeroRevista;
+    
+    private String nomeMarca;
 }

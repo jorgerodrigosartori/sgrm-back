@@ -292,6 +292,21 @@ public class ProcessoService {
 		return retorno;
 	}
 
+	public List<MovimentacaoDto> listarUltimasMovimentacoesMinhasMarcas() {
+		
+		List<MovimentacaoDto> retorno = new ArrayList<MovimentacaoDto>();
+		List<Object[]> list = marcaAcompanhadaRepositoryCustom.ultimasMovimentacoesMarcasAcompanhadas();
+		for(Object[] linha : list ) {
+			MovimentacaoDto mo = new MovimentacaoDto();
+			mo.setNumeroRevista((Integer) linha[0]);
+			mo.setNumeroProcesso((Long) linha[1]);
+			mo.setNomeMarca((String) linha[2]);
+			retorno.add(mo);
+		}
+		
+		return retorno;
+	}
+	
 	public Integer getQtTotalProcessos() {
 
 		return processoRepositoryCustom.getQtProcessos();
