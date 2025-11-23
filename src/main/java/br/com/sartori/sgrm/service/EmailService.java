@@ -124,7 +124,8 @@ public class EmailService {
 	    .append("</a>")
 	    .append("</div>");
         enviarEmail(
-            "jorge.sartori@gmail.com",
+            new String[]{"guilherme@escritoriocapacita.com.br", "regis@escritoriocapacita.com.br"},
+            new String[]{"jorge.sartori@gmail.com"},
             "SGRM - Nova revista atualizada na base.",
             html.toString()
         );
@@ -132,12 +133,14 @@ public class EmailService {
     	return html.toString();
     }
 
-    private void enviarEmail(String para, String assunto, String html) throws MessagingException {
+    private void enviarEmail(String[] para, String[] copia, String assunto, String html) throws MessagingException {
 
     	MimeMessage message = mailSender.createMimeMessage();
 
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         helper.setTo(para);
+        helper.setCc(copia);
+        
         helper.setSubject(assunto);
         helper.setText(html, true);
         mailSender.send(message);
