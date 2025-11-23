@@ -123,11 +123,11 @@ public class EmailService {
 	    .append("Acessar o sistema")
 	    .append("</a>")
 	    .append("</div>");
-        //enviarEmail(
-        //    "jorge.sartori@gmail.com",
-         //   "SGRM - Nova revista atualizada na base.",
-         //   html.toString()
-        //);
+        enviarEmail(
+            "jorge.sartori@gmail.com",
+            "SGRM - Nova revista atualizada na base.",
+            html.toString()
+        );
     	
     	return html.toString();
     }
