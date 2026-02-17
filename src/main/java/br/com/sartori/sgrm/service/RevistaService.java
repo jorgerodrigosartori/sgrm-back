@@ -23,6 +23,7 @@ import br.com.sartori.sgrm.repository.IProcessoRepository;
 import br.com.sartori.sgrm.repository.IRevistaRepository;
 import br.com.sartori.sgrm.repository.RevistaRepositoryCustom;
 import br.com.sartori.sgrm.util.UtilData;
+import jakarta.mail.MessagingException;
 
 @Service
 public class RevistaService {
@@ -44,17 +45,15 @@ public class RevistaService {
 	
 	private String URL_REVISTA_INPI = "https://revistas.inpi.gov.br/txt/RM";
 	
-	public RevistaDto cargaRevista(Integer numeroRevista) {
+	public RevistaDto cargaRevista(Integer numeroRevista) throws MessagingException{
 		
 		Revista rev = new Revista();
 		rev.setDataCarga(new Date());
 		rev.setNumeroRevista(numeroRevista);
 		rev.setStatus("P");
 		rev.setIntegral("S");
-		iRevistaRepository.save(rev);	
-		
+		iRevistaRepository.save(rev);			
 		revistaAsyncService.processaCargaRevista(rev);
-		System.out.println("Retornando para tela");
 		return converte(rev);
 	}
 

@@ -21,6 +21,7 @@ import br.com.sartori.sgrm.model.DespachoProcesso;
 import br.com.sartori.sgrm.model.Processo;
 import br.com.sartori.sgrm.service.ProcessoService;
 import br.com.sartori.sgrm.service.RevistaService;
+import jakarta.mail.MessagingException;
 import jakarta.websocket.server.PathParam;
 
 @RestController
@@ -35,7 +36,7 @@ public class RevistaController {
 	
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/carga/{revista}")
-	public RevistaDto cargaRevista(@PathVariable(value = "revista") Integer revista) throws FileNotFoundException {
+	public RevistaDto cargaRevista(@PathVariable(value = "revista") Integer revista) throws FileNotFoundException, MessagingException {
 
 		return revistaService.cargaRevista(revista);
 
@@ -44,11 +45,26 @@ public class RevistaController {
 	
 
 	@GetMapping("/carga")
-	public void cargaRevista() throws FileNotFoundException {
-		
-		for(int i = 1; i < 30; i++)
-			revistaService.cargaRevista(2848 + i);
+	public String cargaRevista() throws FileNotFoundException, MessagingException {
+	
+	
+		RevistaDto consultaUltimaRevista = revistaService.consultaUltimaRevista();
+		if(consultaUltimaRevista.getStatus().equals("E")) {
+			return "Ocorreu um erro no processamento da revista " + consultaUltimaRevista.getNumeroRevista() + ". Processamento reiniciado.";
+		}else if(consultaUltimaRevista.getStatus().equals("P")) {
+			return "Carga da revista " + consultaUltimaRevista.getNumeroRevista() + " em processamento. Aguarde conclusão.";
+		}else {
+			// verifica se existe revista disponível para carga
+			boolean existeNovaRevista = revistaService.verificaExisteNovaRevista(consultaUltimaRevista.getNumeroRevista() + 1);
+			if(existeNovaRevista) {
+				revistaService.cargaRevista(consultaUltimaRevista.getNumeroRevista() + 1);
+				return "Inciada a carga da revista " + (consultaUltimaRevista.getNumeroRevista() + 1) + ". Aguarde conclusão.";
+			}
+			else return "Nenhuma revista disponível para carga.";
+		}	
 	}
+	
+	
 	
 	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/{revista}/processos")

@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -32,6 +31,7 @@ import br.com.sartori.sgrm.model.Processo;
 import br.com.sartori.sgrm.model.Revista;
 import br.com.sartori.sgrm.repository.IRevistaRepository;
 import br.com.sartori.sgrm.util.UtilData;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -52,10 +52,13 @@ public class RevistaAsyncService {
 	@Autowired
 	private ClasseNiceService classeNiceService;
 	
+	@Autowired
+	private EmailService emailService;
+	
 	private String URL_REVISTA_INPI = "https://revistas.inpi.gov.br/txt/RM";
 
 	@Async
-	public void processaCargaRevista(Revista rev) {
+	public void processaCargaRevista(Revista rev) throws MessagingException{
 
 		try {
 			RevistaXml revista = recuperaRevistas(rev.getNumeroRevista());
@@ -77,7 +80,7 @@ public class RevistaAsyncService {
 	                .map(pro -> Long.valueOf(pro.getNumero()))
 	                .toList();
 					
-			int batchSize = 100;
+			int batchSize = 500;
 			Map<Long, Processo> processosExistentes = new HashMap<>();
 
 
@@ -91,7 +94,7 @@ public class RevistaAsyncService {
 			    for (Processo p : lote) {
 			        processosExistentes.put(p.getNumeroProcesso(), p);
 			    }
-			    System.out.println("Concluida consulta banco " + (contador * 100) + " de " + processosExistentes.size());
+			    System.out.println("Concluida consulta de " + (contador * batchSize) + " processos. Encontrados no banco: " + processosExistentes.size());
 			}
 			
 			contador = 0;
@@ -156,12 +159,16 @@ public class RevistaAsyncService {
 			e.printStackTrace();
 		}
 		iRevistaRepository.save(rev);
+		
+		// envia e-mail com a nova revista
+		emailService.emailUltimaRevista();
+		
 	}
 
-	//@Transactional
+
 	private void gravaBancoProcesso(List<Processo> listaProcessos) {
 
-		int size = 1000;
+		int size = 500;
 		List<List<Processo>> partitionedLists = new ArrayList<List<Processo>>();
 		for (int i = 0; i < listaProcessos.size(); i += size) {
 			int end = Math.min(i + size, listaProcessos.size());
@@ -169,15 +176,12 @@ public class RevistaAsyncService {
 		}
 
 		System.out.println(new Date() + " - Grava processos: " + listaProcessos.size());
-		// partitionedLists.parallelStream().forEach(p ->
-		// processoService.salvarProcessos(p));
 
 		int qtLista = 0;
 		for (List<Processo> lista : partitionedLists) {
 			qtLista++;
 			salvarProcessos(lista);
 			System.out.println(new Date() + " - Grava processos: " + qtLista + " de " + partitionedLists.size());
-		// despachoProcessoService.salvarAll(lista);
 		}
 	}
 	
@@ -187,10 +191,9 @@ public class RevistaAsyncService {
 		processoService.salvarProcessos(lista);
 	}
 
-	//@Transactional
 	public void gravaBancoDespachoProcesso(List<DespachoProcesso> listaDespachosProcesso) {
 
-		int size = 1000;
+		int size = 500;
 		List<List<DespachoProcesso>> partitionedLists = new ArrayList<List<DespachoProcesso>>();
 		for (int i = 0; i < listaDespachosProcesso.size(); i += size) {
 			int end = Math.min(i + size, listaDespachosProcesso.size());
