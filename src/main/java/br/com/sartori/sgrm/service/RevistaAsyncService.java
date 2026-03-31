@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import br.com.sartori.sgrm.bean.dto.MovimentacaoDto;
+import br.com.sartori.sgrm.bean.dto.RevistaDto;
 import br.com.sartori.sgrm.bean.xml.DespachoXml;
 import br.com.sartori.sgrm.bean.xml.ProcessoXml;
 import br.com.sartori.sgrm.bean.xml.RevistaXml;
@@ -161,8 +163,10 @@ public class RevistaAsyncService {
 		iRevistaRepository.save(rev);
 		
 		// envia e-mail com a nova revista
-		emailService.emailUltimaRevista();
-		
+		RevistaDto ultimaRevista = new RevistaDto(rev);
+		List<MovimentacaoDto> ultimasMovimentacoes = processoService.listarUltimasMovimentacoesMinhasMarcas();
+		Integer qtTotalMinhas = processoService.getQtTotalMinhas();
+		emailService.emailUltimaRevista(ultimaRevista, ultimasMovimentacoes, qtTotalMinhas);	
 	}
 
 

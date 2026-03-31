@@ -50,7 +50,8 @@ public class RevistaController {
 	
 		RevistaDto consultaUltimaRevista = revistaService.consultaUltimaRevista();
 		if(consultaUltimaRevista.getStatus().equals("E")) {
-			return "Ocorreu um erro no processamento da revista " + consultaUltimaRevista.getNumeroRevista() + ". Processamento reiniciado.";
+			revistaService.cargaRevista(consultaUltimaRevista.getNumeroRevista() + 1);
+			return "Havia ocorrido um erro no processamento da revista " + consultaUltimaRevista.getNumeroRevista() + ". Processamento reiniciado.";
 		}else if(consultaUltimaRevista.getStatus().equals("P")) {
 			return "Carga da revista " + consultaUltimaRevista.getNumeroRevista() + " em processamento. Aguarde conclusão.";
 		}else {

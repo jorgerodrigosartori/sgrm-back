@@ -18,22 +18,8 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
     
-    @Autowired
-    private RevistaService revistaService;
-    
-    @Autowired
-    private ProcessoService processoService;
-    
-    public String emailUltimaRevista() throws MessagingException {
+    public String emailUltimaRevista(RevistaDto ultimaRevista, List<MovimentacaoDto> ultimasMovimentacoes, Integer qtTotalMinhas) throws MessagingException {
     	
-    	
-    	RevistaDto ultimaRevista = revistaService.consultaUltimaRevista();
-
-		//List<MovimentacaoDto> movimentacoes = processoService.listarMovimentacoesMinhasMarcas();
-		List<MovimentacaoDto> ultimasMovimentacoes = processoService.listarUltimasMovimentacoesMinhasMarcas();
-
-		Integer qtTotalMinhas = processoService.getQtTotalMinhas();
-		
     	StringBuilder html = new StringBuilder("");
 		html.append("<div style='")
 	    .append("background:#ffffff;")
