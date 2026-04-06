@@ -82,7 +82,7 @@ public class RevistaAsyncService {
 	                .map(pro -> Long.valueOf(pro.getNumero()))
 	                .toList();
 					
-			int batchSize = 500;
+			int batchSize = 200;
 			Map<Long, Processo> processosExistentes = new HashMap<>();
 
 
@@ -172,7 +172,7 @@ public class RevistaAsyncService {
 
 	private void gravaBancoProcesso(List<Processo> listaProcessos) {
 
-		int size = 500;
+		int size = 1000;
 		List<List<Processo>> partitionedLists = new ArrayList<List<Processo>>();
 		for (int i = 0; i < listaProcessos.size(); i += size) {
 			int end = Math.min(i + size, listaProcessos.size());
@@ -197,7 +197,7 @@ public class RevistaAsyncService {
 
 	public void gravaBancoDespachoProcesso(List<DespachoProcesso> listaDespachosProcesso) {
 
-		int size = 500;
+		int size = 1000;
 		List<List<DespachoProcesso>> partitionedLists = new ArrayList<List<DespachoProcesso>>();
 		for (int i = 0; i < listaDespachosProcesso.size(); i += size) {
 			int end = Math.min(i + size, listaDespachosProcesso.size());
