@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.sartori.sgrm.bean.dto.RevistaDto;
 import br.com.sartori.sgrm.bean.xml.DespachoXml;
@@ -91,6 +92,7 @@ public class RevistaService {
 		return converte(all);
 	}
 	
+	@Transactional
 	public void expurgarRevistas(Integer qtRevistasManter) {
 		
 		System.out.println("Iniciado processo de expurgo de revistas");
