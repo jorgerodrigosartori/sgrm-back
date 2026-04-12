@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,7 +93,8 @@ public class RevistaService {
 		return converte(all);
 	}
 	
-
+	@Modifying
+	@Transactional
 	public void expurgarRevistas(Integer qtRevistasManter) {
 		
 		System.out.println("Iniciado processo de expurgo de revistas");

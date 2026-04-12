@@ -3,11 +3,14 @@ package br.com.sartori.sgrm.repository;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import br.com.sartori.sgrm.model.DespachoProcesso;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 
 @Repository
 public class DespachoProcessoRepositoryCustom {
@@ -72,6 +75,4 @@ public class DespachoProcessoRepositoryCustom {
 		query.setParameter("numeroRevista", numeroRevista);
 		return query.executeUpdate();
 	}
-
-
 }
