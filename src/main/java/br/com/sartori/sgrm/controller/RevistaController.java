@@ -60,9 +60,20 @@ public class RevistaController {
 			if(existeNovaRevista) {
 				revistaService.cargaRevista(consultaUltimaRevista.getNumeroRevista() + 1);
 				return "Inciada a carga da revista " + (consultaUltimaRevista.getNumeroRevista() + 1) + ". Aguarde conclusão.";
+			} else {
+				
+				return "Nenhuma revista disponível para carga.";
 			}
-			else return "Nenhuma revista disponível para carga.";
 		}	
+	}
+	
+	@GetMapping("/expurgo")
+	public String expurgoRevista() {
+	
+		revistaService.expurgarRevistas(100);
+		
+		return "Expurgo concluido.";
+				
 	}
 	
 	

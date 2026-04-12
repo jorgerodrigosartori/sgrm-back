@@ -44,4 +44,34 @@ public class DespachoProcessoRepositoryCustom {
 		return query.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
+	public boolean existemDespachosRevista(Integer numeroRevista) {
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append(" Select dp ");
+		sql.append(" from DespachoProcesso dp ");
+		sql.append(" where dp.id.numeroRevista = :numeroRevista ");
+		
+		Query query = em.createQuery(sql.toString(), DespachoProcesso.class);
+		query.setParameter("numeroRevista", numeroRevista);
+		List<DespachoProcesso> lista = query.getResultList();
+		if(lista.isEmpty())
+			return false;
+		else return true;
+	}
+	
+	public int excluirDespachos(List<Long> processos, Integer numeroRevista) {
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append(" delete DespachoProcesso ");
+		sql.append(" where id.numeroProcesso not in (:processos) ");
+		sql.append("   and id.numeroRevista = :numeroRevista ");
+		
+		Query query = em.createQuery(sql.toString(), DespachoProcesso.class);
+		query.setParameter("processos", processos);
+		query.setParameter("numeroRevista", numeroRevista);
+		return query.executeUpdate();
+	}
+
+
 }

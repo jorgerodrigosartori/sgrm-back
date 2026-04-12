@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,11 @@ import br.com.sartori.sgrm.bean.xml.RevistaXml;
 import br.com.sartori.sgrm.model.Despacho;
 import br.com.sartori.sgrm.model.DespachoProcesso;
 import br.com.sartori.sgrm.model.Processo;
+import br.com.sartori.sgrm.model.ProcessoAcompanhado;
 import br.com.sartori.sgrm.model.Revista;
+import br.com.sartori.sgrm.repository.DespachoProcessoRepositoryCustom;
 import br.com.sartori.sgrm.repository.IDespachoRepository;
+import br.com.sartori.sgrm.repository.IProcessoAcompanhadoRepository;
 import br.com.sartori.sgrm.repository.IProcessoRepository;
 import br.com.sartori.sgrm.repository.IRevistaRepository;
 import br.com.sartori.sgrm.repository.RevistaRepositoryCustom;
@@ -29,8 +33,14 @@ import jakarta.mail.MessagingException;
 public class RevistaService {
 
 	@Autowired
-	private RevistaRepositoryCustom revistaRepositoryCustom;
+	private IProcessoAcompanhadoRepository processoAcompanhadoRepository;
 
+	@Autowired
+	private RevistaRepositoryCustom revistaRepositoryCustom;
+	
+	@Autowired
+	private DespachoProcessoRepositoryCustom despachoProcessoRepositoryCustom;
+	
 	@Autowired
 	private IRevistaRepository iRevistaRepository;
 
@@ -80,6 +90,35 @@ public class RevistaService {
 		List<Revista> all = revistaRepositoryCustom.listarRevistas(8);
 		return converte(all);
 	}
+	
+	public void expurgarRevistas(Integer qtRevistasManter) {
+		
+		System.out.println("Iniciado processo de expurgo de revistas");
+		Revista ultimaRevista = revistaRepositoryCustom.consultarUltimaRevista();
+		List<Revista> expurgar = revistaRepositoryCustom.listarRevistasParaExpurgo(ultimaRevista.getNumeroRevista(), qtRevistasManter);
+		List<ProcessoAcompanhado> acompanhados = processoAcompanhadoRepository.findAll();
+		
+		List<Long> numeros = acompanhados.stream()
+			    .map(ProcessoAcompanhado::getNumeroProcesso)
+			    .collect(Collectors.toList());
+		
+		expurgar.parallelStream().forEach(revista -> {
+			
+			int despachosExcluidos = despachoProcessoRepositoryCustom.excluirDespachos(numeros, revista.getNumeroRevista());
+			
+			System.out.println("Revista: " + revista.getNumeroRevista() + " despachosExcluidos: " + despachosExcluidos);
+			
+			boolean existemDespachosRevista = despachoProcessoRepositoryCustom.existemDespachosRevista(revista.getNumeroRevista());
+			if(existemDespachosRevista) {
+				revista.setIntegral("N");
+				iRevistaRepository.save(revista);
+			}else {
+				iRevistaRepository.deleteById(revista.getNumeroRevista());
+			}
+		});
+	}
+	
+	
 
 	private List<RevistaDto> converte(List<Revista> all) {
 

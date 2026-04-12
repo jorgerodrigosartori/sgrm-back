@@ -31,6 +31,26 @@ public class RevistaRepositoryCustom {
 		return query.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Revista> listarRevistasParaExpurgo(Integer ultimaRevista, Integer quantidadeManter) {
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append(" select rev ");		
+		sql.append(" from Revista rev ");	
+		sql.append(" where rev.status = :status ");	
+		sql.append("   and rev.numeroRevista < :ultimaRevistaManter ");	
+		sql.append("   and rev.integral = :integral ");	
+		sql.append(" order by rev.numeroRevista desc ");		
+		
+		Query query = em.createQuery(sql.toString());
+		query.setParameter("status", "S");
+		Integer ultimaRevistaManter = ultimaRevista - quantidadeManter;
+		query.setParameter("ultimaRevistaManter", ultimaRevistaManter);
+		query.setParameter("integral", "S");
+
+		return query.getResultList();
+	}
+	
 	public List<Integer> listarNumeroRevistas(Integer quantidade) {
 		
 		List<Revista> listarRevistas = listarRevistas(quantidade);
