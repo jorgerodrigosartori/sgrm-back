@@ -106,7 +106,7 @@ public class RevistaService {
 			    .map(ProcessoAcompanhado::getNumeroProcesso)
 			    .collect(Collectors.toList());
 		
-		expurgar.parallelStream().forEach(revista -> {
+		for(Revista revista : expurgar) {
 			
 			int despachosExcluidos = despachoProcessoRepositoryCustom.excluirDespachos(numeros, revista.getNumeroRevista());
 			
@@ -119,7 +119,7 @@ public class RevistaService {
 			}else {
 				iRevistaRepository.deleteById(revista.getNumeroRevista());
 			}
-		});
+		}
 	}
 	
 	
