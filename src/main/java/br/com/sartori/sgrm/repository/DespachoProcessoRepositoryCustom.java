@@ -67,7 +67,7 @@ public class DespachoProcessoRepositoryCustom {
 		sql.append(" where id.numeroProcesso not in (:processos) ");
 		sql.append("   and id.numeroRevista = :numeroRevista ");
 		
-		Query query = em.createQuery(sql.toString(), DespachoProcesso.class);
+		Query query = em.createQuery(sql.toString());
 		query.setParameter("processos", processos);
 		query.setParameter("numeroRevista", numeroRevista);
 		return query.executeUpdate();
