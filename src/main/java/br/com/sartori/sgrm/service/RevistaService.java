@@ -92,7 +92,7 @@ public class RevistaService {
 		return converte(all);
 	}
 	
-	@Transactional
+
 	public void expurgarRevistas(Integer qtRevistasManter) {
 		
 		System.out.println("Iniciado processo de expurgo de revistas");
