@@ -27,6 +27,7 @@ import br.com.sartori.sgrm.repository.IDespachoRepository;
 import br.com.sartori.sgrm.repository.IProcessoAcompanhadoRepository;
 import br.com.sartori.sgrm.repository.IProcessoRepository;
 import br.com.sartori.sgrm.repository.IRevistaRepository;
+import br.com.sartori.sgrm.repository.ProcessoRepositoryCustom;
 import br.com.sartori.sgrm.repository.RevistaRepositoryCustom;
 import br.com.sartori.sgrm.util.UtilData;
 import jakarta.mail.MessagingException;
@@ -53,6 +54,9 @@ public class RevistaService {
 	private IProcessoRepository iProcessoRepository;
 	
 	@Autowired
+	private ProcessoRepositoryCustom processoRepositoryCustom;
+	
+	@Autowired
 	private RevistaAsyncService revistaAsyncService;
 	
 	private String URL_REVISTA_INPI = "https://revistas.inpi.gov.br/txt/RM";
@@ -60,6 +64,7 @@ public class RevistaService {
 	public RevistaDto cargaRevista(Integer numeroRevista) throws MessagingException{
 		
 		Revista rev = new Revista();
+		expurgarRevistas(100);
 		rev.setDataCarga(new Date());
 		rev.setNumeroRevista(numeroRevista);
 		rev.setStatus("P");
@@ -106,9 +111,11 @@ public class RevistaService {
 			    .map(ProcessoAcompanhado::getNumeroProcesso)
 			    .collect(Collectors.toList());
 		
+		Integer totalExpurgado = 0;
 		for(Revista revista : expurgar) {
 			
 			int despachosExcluidos = despachoProcessoRepositoryCustom.excluirDespachos(numeros, revista.getNumeroRevista());
+			totalExpurgado = totalExpurgado + despachosExcluidos;
 			
 			System.out.println("Revista: " + revista.getNumeroRevista() + " despachosExcluidos: " + despachosExcluidos);
 			
@@ -120,6 +127,13 @@ public class RevistaService {
 				iRevistaRepository.deleteById(revista.getNumeroRevista());
 			}
 		}
+		if(totalExpurgado > 0) {
+			
+			int excluidos = processoRepositoryCustom.excluirProcessoSemDespacho();
+			System.out.println(excluidos + " processos ecluidos.");
+			
+		}
+		System.out.println("Fim expurgo");
 	}
 	
 	
