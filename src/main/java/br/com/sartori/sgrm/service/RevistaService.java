@@ -132,9 +132,14 @@ public class RevistaService {
 		if(totalExpurgado > 0) {
 			System.out.println("Iniciando a exclusão de processos.");
 			do {
-				excluidos = processoRepositoryCustom.excluirProcessoSemDespacho();
-				total = total + excluidos;
-				System.out.println(total + " processos excluidos.");	
+				List<Long> excluir = processoRepositoryCustom.consultaProcessoSemDespacho(1000);
+				if(excluir.isEmpty())
+					excluidos = 0;
+				else {
+					excluidos = processoRepositoryCustom.excluirProcessoSemDespacho(excluir);
+					total = total + excluidos;
+					System.out.println(total + " processos excluidos.");	
+				}
 			} while (excluidos > 0);
 			
 		}

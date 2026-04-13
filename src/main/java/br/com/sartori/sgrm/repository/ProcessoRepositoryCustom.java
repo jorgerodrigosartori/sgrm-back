@@ -166,20 +166,22 @@ public class ProcessoRepositoryCustom {
 		query.executeUpdate();
 	}
 	
-	public int excluirProcessoSemDespacho() {
+	public int excluirProcessoSemDespacho(List<Long> processos) {
 		
 		StringBuilder sql = new StringBuilder();
 		sql.append(" delete Processo p ");
-		sql.append(" where not exists ");
+		sql.append(" where p.numeroProcesso in (:processos) ");
+		sql.append("   and not exists ");
 		sql.append(" (select 1 from DespachoProcesso d where d.id.numeroProcesso = p.numeroProcesso) ");
 		
 		Query query = em.createQuery(sql.toString());
+		query.setParameter("processos", processos);
 		
 		return query.executeUpdate();
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Long> consultaProcessoSemDespacho() {
+	public List<Long> consultaProcessoSemDespacho(Integer maxResults) {
 		
 		StringBuilder sql = new StringBuilder();
 		sql.append(" Select p.numeroProcesso Processo p ");
@@ -187,7 +189,7 @@ public class ProcessoRepositoryCustom {
 		sql.append(" (select 1 from DespachoProcesso d where d.id.numeroProcesso = p.numeroProcesso) ");
 		
 		Query query = em.createQuery(sql.toString());
-		query.setMaxResults(1000);
+		query.setMaxResults(maxResults);
 		return query.getResultList();
 	}
 }
