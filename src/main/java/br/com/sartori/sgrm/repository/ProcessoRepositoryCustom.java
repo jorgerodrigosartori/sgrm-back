@@ -169,9 +169,9 @@ public class ProcessoRepositoryCustom {
 	public int excluirProcessoSemDespacho() {
 		
 		StringBuilder sql = new StringBuilder();
-		sql.append(" delete processo p ");
+		sql.append(" delete Processo p ");
 		sql.append(" where not exists ");
-		sql.append(" (select 1 from despacho_processo d where d.numero_processo = p.numero_processo) ");
+		sql.append(" (select 1 from DespachoProcesso d where d.numeroProcesso = p.numeroProcesso) ");
 		
 		Query query = em.createQuery(sql.toString());
 		
