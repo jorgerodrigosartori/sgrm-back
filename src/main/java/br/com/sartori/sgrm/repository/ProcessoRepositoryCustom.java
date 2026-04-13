@@ -171,7 +171,7 @@ public class ProcessoRepositoryCustom {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" delete Processo p ");
 		sql.append(" where not exists ");
-		sql.append(" (select 1 from DespachoProcesso d where d.numeroProcesso = p.numeroProcesso) ");
+		sql.append(" (select 1 from DespachoProcesso d where d.id.numeroProcesso = p.numeroProcesso) ");
 		
 		Query query = em.createQuery(sql.toString());
 		
