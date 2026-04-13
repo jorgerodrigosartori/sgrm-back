@@ -121,7 +121,7 @@ public class RevistaService {
 			System.out.println("Iniciando a exclusão de processos.");
 			do {
 				List<Long> listaExcluir = processoRepositoryCustom.consultaProcessoSemDespacho(1000);
-				if(excluir.isEmpty())
+				if(listaExcluir.isEmpty())
 					excluidos = 0;
 				else {
 					excluidos = excluiProcessos(listaExcluir);
