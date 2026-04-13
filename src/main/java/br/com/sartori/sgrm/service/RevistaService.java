@@ -140,17 +140,15 @@ public class RevistaService {
 		System.out.println("Fim expurgo");
 	}
 
-	@Modifying
 	@Transactional
-	private int excluiProcessos(List<Long> listaExcluir){
+	public int excluiProcessos(List<Long> listaExcluir){
 
 		return processoRepositoryCustom.excluirProcessoSemDespacho(listaExcluir);
 	}
 
 	
-	@Modifying
 	@Transactional
-	private int excluiDespachos(Integer revista, List<Long> numeros){
+	public int excluiDespachos(Integer revista, List<Long> numeros){
 		
 		int despachosExcluidos = despachoProcessoRepositoryCustom.excluirDespachos(numeros, revista);
 		System.out.println("Revista: " + revista + " despachosExcluidos: " + despachosExcluidos);
