@@ -15,6 +15,7 @@ import br.com.sartori.sgrm.bean.dto.ProcessoDto;
 import br.com.sartori.sgrm.model.DespachoProcesso;
 import br.com.sartori.sgrm.model.Processo;
 import br.com.sartori.sgrm.model.ProcessoAcompanhado;
+import br.com.sartori.sgrm.repository.DespachoProcessoRepositoryCustom;
 import br.com.sartori.sgrm.repository.IProcessoAcompanhadoRepository;
 import br.com.sartori.sgrm.repository.IProcessoRepository;
 import br.com.sartori.sgrm.repository.MarcaAcompanhadaRepositoryCustom;
@@ -28,8 +29,11 @@ import jakarta.transaction.Transactional;
 public class ProcessoService {
 
 	@Autowired
-	DespachoService despachoService;
+	DespachoProcessoRepositoryCustom despachoProcessoRepositoryCustom;
 
+	@Autowired
+	DespachoService despachoService;
+	
 	@Autowired
 	IProcessoRepository iProcessoRepository;
 	
@@ -316,4 +320,22 @@ public class ProcessoService {
 
 		return marcaAcompanhadaRepositoryCustom.qtMarcasAcompanhadas().intValue();
 	}
+	
+	@Transactional
+	public int excluiProcessos(List<Long> listaExcluir){
+
+		return processoRepositoryCustom.excluirProcessoSemDespacho(listaExcluir);
+	}
+
+	
+	@Transactional
+	public int excluiDespachos(Integer revista, List<Long> numeros){
+		
+		int despachosExcluidos = despachoProcessoRepositoryCustom.excluirDespachos(numeros, revista);
+		System.out.println("Revista: " + revista + " despachosExcluidos: " + despachosExcluidos);
+
+		return despachosExcluidos;
+	}
+
+
 }

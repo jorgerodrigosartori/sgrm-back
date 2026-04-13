@@ -9,9 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import br.com.sartori.sgrm.bean.dto.RevistaDto;
 import br.com.sartori.sgrm.bean.xml.DespachoXml;
@@ -36,8 +34,11 @@ import jakarta.mail.MessagingException;
 public class RevistaService {
 
 	@Autowired
-	private IProcessoAcompanhadoRepository processoAcompanhadoRepository;
+	private ProcessoService processoService;
 
+	@Autowired
+	private IProcessoAcompanhadoRepository processoAcompanhadoRepository;
+	
 	@Autowired
 	private RevistaRepositoryCustom revistaRepositoryCustom;
 	
@@ -112,7 +113,7 @@ public class RevistaService {
 		
 		Integer totalExpurgado = 0;
 		for(Revista revista : expurgar) {
-			int despachosExcluidos = excluiDespachos(revista.getNumeroRevista(), numeros);
+			int despachosExcluidos = processoService.excluiDespachos(revista.getNumeroRevista(), numeros);
 			boolean existemDespachosRevista = despachoProcessoRepositoryCustom.existemDespachosRevista(revista.getNumeroRevista());
 			if(existemDespachosRevista) {
 				revista.setIntegral("N");
@@ -131,29 +132,13 @@ public class RevistaService {
 				if(listaExcluir.isEmpty())
 					excluidos = 0;
 				else {
-					excluidos = excluiProcessos(listaExcluir);
+					excluidos = processoService.excluiProcessos(listaExcluir);
 					total = total + excluidos;
 					System.out.println(total + " processos excluidos.");	
 				}
 			} while (excluidos > 0);
 		}
 		System.out.println("Fim expurgo");
-	}
-
-	@Transactional
-	public int excluiProcessos(List<Long> listaExcluir){
-
-		return processoRepositoryCustom.excluirProcessoSemDespacho(listaExcluir);
-	}
-
-	
-	@Transactional
-	public int excluiDespachos(Integer revista, List<Long> numeros){
-		
-		int despachosExcluidos = despachoProcessoRepositoryCustom.excluirDespachos(numeros, revista);
-		System.out.println("Revista: " + revista + " despachosExcluidos: " + despachosExcluidos);
-
-		return despachosExcluidos;
 	}
 
 	private List<RevistaDto> converte(List<Revista> all) {
