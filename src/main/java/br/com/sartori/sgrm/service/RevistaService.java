@@ -112,7 +112,14 @@ public class RevistaService {
 		
 		Integer totalExpurgado = 0;
 		for(Revista revista : expurgar) {
-			int despachosExcluidos = excluiDespachos(revista, numeros);
+			int despachosExcluidos = excluiDespachos(revista.getNumeroRevista(), numeros);
+			boolean existemDespachosRevista = despachoProcessoRepositoryCustom.existemDespachosRevista(revista.getNumeroRevista());
+			if(existemDespachosRevista) {
+				revista.setIntegral("N");
+				iRevistaRepository.save(revista);
+			}else {
+				iRevistaRepository.deleteById(revista.getNumeroRevista());
+			}
 			totalExpurgado = totalExpurgado + despachosExcluidos;
 		}
 		int excluidos = 0;
@@ -143,17 +150,11 @@ public class RevistaService {
 	
 	@Modifying
 	@Transactional
-	private int excluiDespachos(Revista revista, List<Long> numeros){
+	private int excluiDespachos(Integer revista, List<Long> numeros){
 		
-		int despachosExcluidos = despachoProcessoRepositoryCustom.excluirDespachos(numeros, revista.getNumeroRevista());
-		System.out.println("Revista: " + revista.getNumeroRevista() + " despachosExcluidos: " + despachosExcluidos);
-		boolean existemDespachosRevista = despachoProcessoRepositoryCustom.existemDespachosRevista(revista.getNumeroRevista());
-		if(existemDespachosRevista) {
-			revista.setIntegral("N");
-			iRevistaRepository.save(revista);
-		}else {
-			iRevistaRepository.deleteById(revista.getNumeroRevista());
-		}
+		int despachosExcluidos = despachoProcessoRepositoryCustom.excluirDespachos(numeros, revista);
+		System.out.println("Revista: " + revista + " despachosExcluidos: " + despachosExcluidos);
+
 		return despachosExcluidos;
 	}
 
