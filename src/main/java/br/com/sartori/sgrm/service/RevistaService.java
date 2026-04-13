@@ -112,7 +112,7 @@ public class RevistaService {
 		
 		Integer totalExpurgado = 0;
 		for(Revista revista : expurgar) {
-			int exclu = excluirDespachos(revista);
+			int despachosExcluidos = excluirDespachos(revista, numeros);
 			totalExpurgado = totalExpurgado + despachosExcluidos;
 		}
 		int excluidos = 0;
@@ -143,7 +143,7 @@ public class RevistaService {
 	
 	@Modifying
 	@Transactional
-	private int excluiDespachos(Revista revista){
+	private int excluiDespachos(Revista revista, List<Long> numeros){
 		
 		int despachosExcluidos = despachoProcessoRepositoryCustom.excluirDespachos(numeros, revista.getNumeroRevista());
 		System.out.println("Revista: " + revista.getNumeroRevista() + " despachosExcluidos: " + despachosExcluidos);
