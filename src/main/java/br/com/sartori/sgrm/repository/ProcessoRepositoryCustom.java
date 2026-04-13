@@ -184,7 +184,7 @@ public class ProcessoRepositoryCustom {
 	public List<Long> consultaProcessoSemDespacho(Integer maxResults) {
 		
 		StringBuilder sql = new StringBuilder();
-		sql.append(" Select p.numeroProcesso Processo p ");
+		sql.append(" Select p.numeroProcesso from Processo p ");
 		sql.append(" where not exists ");
 		sql.append(" (select 1 from DespachoProcesso d where d.id.numeroProcesso = p.numeroProcesso) ");
 		
