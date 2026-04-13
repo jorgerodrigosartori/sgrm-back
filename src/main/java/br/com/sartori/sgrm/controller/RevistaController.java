@@ -70,7 +70,7 @@ public class RevistaController {
 	@GetMapping("/expurgo")
 	public String expurgoRevista() {
 	
-		revistaService.expurgarRevistas(70);
+		revistaService.expurgarRevistas(18);
 		
 		return "Expurgo concluido.";
 				
