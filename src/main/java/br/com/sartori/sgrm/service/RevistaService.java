@@ -127,10 +127,15 @@ public class RevistaService {
 				iRevistaRepository.deleteById(revista.getNumeroRevista());
 			}
 		}
+		int excluidos = 0;
+		Integer total = 0;
 		if(totalExpurgado > 0) {
-			
-			int excluidos = processoRepositoryCustom.excluirProcessoSemDespacho();
-			System.out.println(excluidos + " processos ecluidos.");
+			System.out.println("Iniciando a exclusão de processos.");
+			do {
+				excluidos = processoRepositoryCustom.excluirProcessoSemDespacho();
+				total = total + excluidos;
+				System.out.println(total + " processos excluidos.");	
+			} while (excluidos > 0);
 			
 		}
 		System.out.println("Fim expurgo");

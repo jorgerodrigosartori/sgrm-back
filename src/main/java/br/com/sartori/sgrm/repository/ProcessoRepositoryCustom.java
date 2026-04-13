@@ -177,4 +177,17 @@ public class ProcessoRepositoryCustom {
 		
 		return query.executeUpdate();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Long> consultaProcessoSemDespacho() {
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append(" Select p.numeroProcesso Processo p ");
+		sql.append(" where not exists ");
+		sql.append(" (select 1 from DespachoProcesso d where d.id.numeroProcesso = p.numeroProcesso) ");
+		
+		Query query = em.createQuery(sql.toString());
+		query.setMaxResults(1000);
+		return query.getResultList();
+	}
 }
