@@ -112,7 +112,7 @@ public class RevistaService {
 		
 		Integer totalExpurgado = 0;
 		for(Revista revista : expurgar) {
-			int despachosExcluidos = excluirDespachos(revista, numeros);
+			int despachosExcluidos = excluiDespachos(revista, numeros);
 			totalExpurgado = totalExpurgado + despachosExcluidos;
 		}
 		int excluidos = 0;
