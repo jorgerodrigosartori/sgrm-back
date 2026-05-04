@@ -65,7 +65,7 @@ public class RevistaService {
 	public RevistaDto cargaRevista(Integer numeroRevista) throws MessagingException{
 		
 		Revista rev = new Revista();
-		expurgarRevistas(20);
+		//expurgarRevistas(20);
 		rev.setDataCarga(new Date());
 		rev.setNumeroRevista(numeroRevista);
 		rev.setStatus("P");
