@@ -125,19 +125,18 @@ public class RevistaService {
 		}
 		int excluidos = 0;
 		Integer total = 0;
-		if(totalExpurgado > 0) {
-			System.out.println("Iniciando a exclusão de processos.");
-			do {
-				List<Long> listaExcluir = processoRepositoryCustom.consultaProcessoSemDespacho(1000);
-				if(listaExcluir.isEmpty())
-					excluidos = 0;
-				else {
-					excluidos = processoService.excluiProcessos(listaExcluir);
-					total = total + excluidos;
-					System.out.println(total + " processos excluidos.");	
-				}
-			} while (excluidos > 0);
-		}
+		System.out.println("Iniciando a exclusão de processos.");
+		do {
+			List<Long> listaExcluir = processoRepositoryCustom.consultaProcessoSemDespacho(500);
+			if(listaExcluir.isEmpty())
+				excluidos = 0;
+			else {
+				excluidos = processoService.excluiProcessos(listaExcluir);
+				total = total + excluidos;
+				System.out.println(total + " processos excluidos.");	
+			}
+		} while (excluidos > 0);
+		
 		System.out.println("Fim expurgo");
 	}
 
