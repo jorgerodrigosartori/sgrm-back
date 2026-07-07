@@ -156,19 +156,19 @@ public class RevistaAsyncService {
 			gravaBancoDespachoProcesso(listaDespachosProcesso);
 			System.out.println(new Date() + " - Final processamento revista ");
 			rev.setStatus("S");
+			iRevistaRepository.save(rev);
+					
+			// envia e-mail com a nova revista
+			RevistaDto ultimaRevista = new RevistaDto(rev);
+			List<MovimentacaoDto> ultimasMovimentacoes = processoService.listarUltimasMovimentacoesMinhasMarcas();
+			Integer qtTotalMinhas = processoService.getQtTotalMinhas();
+			emailService.emailUltimaRevista(ultimaRevista, ultimasMovimentacoes, qtTotalMinhas);	
 		} catch (Exception e) {
 			rev.setStatus("E");
+			iRevistaRepository.save(rev);
 			e.printStackTrace();
 		}
-		iRevistaRepository.save(rev);
-		
-		// envia e-mail com a nova revista
-		RevistaDto ultimaRevista = new RevistaDto(rev);
-		List<MovimentacaoDto> ultimasMovimentacoes = processoService.listarUltimasMovimentacoesMinhasMarcas();
-		Integer qtTotalMinhas = processoService.getQtTotalMinhas();
-		emailService.emailUltimaRevista(ultimaRevista, ultimasMovimentacoes, qtTotalMinhas);	
 	}
-
 
 	private void gravaBancoProcesso(List<Processo> listaProcessos) {
 
