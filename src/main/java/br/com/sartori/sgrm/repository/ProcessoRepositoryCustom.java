@@ -180,6 +180,18 @@ public class ProcessoRepositoryCustom {
 		return query.executeUpdate();
 	}
 	
+	public int excluirProcessos(List<Long> processos) {
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append(" delete Processo p ");
+		sql.append(" where p.numeroProcesso in (:processos) ");
+		
+		Query query = em.createQuery(sql.toString());
+		query.setParameter("processos", processos);
+		
+		return query.executeUpdate();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<Long> consultaProcessoSemDespacho(Integer maxResults) {
 		

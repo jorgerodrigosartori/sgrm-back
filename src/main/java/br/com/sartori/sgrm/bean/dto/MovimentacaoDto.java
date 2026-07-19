@@ -12,4 +12,6 @@ public class MovimentacaoDto {
     private Integer numeroRevista;
     
     private String nomeMarca;
+    
+    private String nomeMovimentacao;
 }

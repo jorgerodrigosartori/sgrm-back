@@ -27,7 +27,7 @@ public class EmailService {
 	    .append("border-radius:8px;")
 	    .append("padding:20px;")
 	    .append("font-family:Arial, sans-serif;")
-	    .append("max-width:600px;")
+	    .append("max-width:800px;")
 	    .append("margin:auto;")
 	    .append("box-shadow:0 2px 6px rgba(0,0,0,0.1);")
 	    .append("'>");
@@ -55,7 +55,7 @@ public class EmailService {
             .append("border-radius:8px;")
             .append("padding:20px;")
             .append("font-family:Arial, sans-serif;")
-            .append("max-width:600px;")
+            .append("max-width:800px;")
             .append("margin:auto;")
             .append("box-shadow:0 2px 6px rgba(0,0,0,0.1);")
             .append("'>");
@@ -68,7 +68,7 @@ public class EmailService {
             .append("</p>");
 
         html.append("<p style='font-size:15px; color:#333; margin-top:20px; margin-bottom:8px;'>")
-            .append("<strong>Últimas 5 movimentações:</strong>")
+            .append("<strong>Últimas 10 movimentações:</strong>")
             .append("</p>");
 
         html.append("<table style='width:100%; border-collapse:collapse;'>")
@@ -77,6 +77,7 @@ public class EmailService {
             .append("<th style='text-align:left; padding:8px; border-bottom:1px solid #ccc;'>Revista</th>")
             .append("<th style='text-align:left; padding:8px; border-bottom:1px solid #ccc;'>Processo</th>")
             .append("<th style='text-align:left; padding:8px; border-bottom:1px solid #ccc;'>Marca</th>")
+            .append("<th style='text-align:left; padding:8px; border-bottom:1px solid #ccc;'>Movimentação</th>")
             .append("</tr>")
             .append("</thead>")
             .append("<tbody>");
@@ -94,14 +95,17 @@ public class EmailService {
                 .append("<td style='padding:8px; border-bottom:1px solid #eee;'>")
                 .append(mov.getNomeMarca())
                 .append("</td>")
-                .append("</tr>");
+            
+	            .append("<td style='padding:8px; border-bottom:1px solid #eee;'>")
+	            .append(mov.getNomeMovimentacao())
+	            .append("</td>")
+	            .append("</tr>");
         }
         html.append("</tbody>")
             .append("</table>")
             .append("</div>");
                
 		html.append("<hr>");
-		html.append("<p>Enviado em: <em>" + java.time.LocalDateTime.now() + "</em></p>");
 		html.append("<div style='margin: 15px 0 25px 0; text-align:left;'>")
 	    .append("<a href='https://sgrm-front-brr4.vercel.app/' ")
 	    .append("style='display:inline-block; padding:10px 18px; background:#1976d2; color:#fff; ")
@@ -110,7 +114,8 @@ public class EmailService {
 	    .append("</a>")
 	    .append("</div>");
         enviarEmail(
-            new String[]{"guilherme@escritoriocapacita.com.br", "regis@escritoriocapacita.com.br"},
+            //new String[]{"guilherme@escritoriocapacita.com.br", "regis@escritoriocapacita.com.br"},
+            new String[]{"jorge.sartori@gmail.com"},
             new String[]{"jorge.sartori@gmail.com"},
             "SGRM - Nova revista atualizada na base.",
             html.toString()

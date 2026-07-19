@@ -305,6 +305,7 @@ public class ProcessoService {
 			mo.setNumeroRevista((Integer) linha[0]);
 			mo.setNumeroProcesso((Long) linha[1]);
 			mo.setNomeMarca((String) linha[2]);
+			mo.setNomeMovimentacao((String) linha[3]);
 			retorno.add(mo);
 		}
 		
@@ -324,7 +325,7 @@ public class ProcessoService {
 	@Transactional
 	public int excluiProcessos(List<Long> listaExcluir){
 
-		return processoRepositoryCustom.excluirProcessoSemDespacho(listaExcluir);
+		return processoRepositoryCustom.excluirProcessos(listaExcluir);
 	}
 
 	
