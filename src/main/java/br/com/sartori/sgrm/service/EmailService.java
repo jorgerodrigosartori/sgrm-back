@@ -114,8 +114,8 @@ public class EmailService {
 	    .append("</a>")
 	    .append("</div>");
         enviarEmail(
-            //new String[]{"guilherme@escritoriocapacita.com.br", "regis@escritoriocapacita.com.br"},
-            new String[]{"jorge.sartori@gmail.com"},
+            new String[]{"guilherme@escritoriocapacita.com.br", "regis@escritoriocapacita.com.br"},
+            //new String[]{"jorge.sartori@gmail.com"},
             new String[]{"jorge.sartori@gmail.com"},
             "SGRM - Nova revista atualizada na base.",
             html.toString()
